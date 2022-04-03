@@ -23,6 +23,9 @@ import { get, merge } from "lodash";
 
 // the full theme object
 import { theme as baseTheme } from "../../utils";
+import Router from 'next/router';
+import {useRouter} from 'next/router';
+import useAuth from "../../context/Auth";
 
 const Loader = styled.div`
   position: fixed;
@@ -51,10 +54,23 @@ const getTheme = (mode) =>
     colors: get(baseTheme.colors.modes, mode, baseTheme.colors),
   });
 
-const Layout = ({ children, pageContext }) => {
+const Layout = ({ children, pageContext}) => {
+
+  // const {checkPath} = useAuth();
+
+  const router = useRouter();
+
   const gContext = useContext(GlobalContext);
 
   const [visibleLoader, setVisibleLoader] = useState(true);
+  // const [checkPath,setcheckPath] = useState(false);
+
+
+  // useEffect(() =>{
+
+  //   (Router.pathname=="/")?setcheckPath(true):setcheckPath(false);
+   
+  // },[]);
 
   useEffect(() => {
     AOS.init({ once: true });
@@ -136,8 +152,8 @@ const Layout = ({ children, pageContext }) => {
             className="site-wrapper overflow-hidden bg-default-2"
             ref={eleRef}
           >
-            <Header isDark={gContext.headerDark} />
-            <SidebarDashboard />
+            {!(router.pathname==='/')?<Header isDark={gContext.headerDark} />:''}
+            {!(router.pathname==='/')?<SidebarDashboard />:''}
             {children}
           </div>
 
@@ -149,6 +165,7 @@ const Layout = ({ children, pageContext }) => {
       </ThemeProvider>
     );
   }
+  
 
   return (
     <>
@@ -165,10 +182,9 @@ const Layout = ({ children, pageContext }) => {
           </Head>
           <Loader id="loading" className={visibleLoader ? "" : "inActive"} />
           <div className="site-wrapper overflow-hidden" ref={eleRef}>
-            <Header isDark={gContext.headerDark} />
+          {!checkPath?<Header isDark={gContext.headerDark} />:''}
             {children}
-
-            <Footer isDark={gContext.footerDark} />
+          {!checkPath?<Footer isDark={gContext.footerDark} />:''}
           </div>
 
           <ModalVideo />

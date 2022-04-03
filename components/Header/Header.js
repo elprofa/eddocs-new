@@ -14,6 +14,7 @@ import { menuItems } from "./menuItems";
 
 import imgP from "../../assets/image/header-profile.png";
 import StyleDuBouton from "./style";
+import { AuthContext } from "../../context/Auth";
 
 const SiteHeader = styled.header`
   .dropdown-toggle::after {
@@ -53,6 +54,8 @@ const Header = () => {
   const gContext = useContext(GlobalContext);
   const [showScrolling, setShowScrolling] = useState(false);
   const [showReveal, setShowReveal] = useState(false);
+
+  
 
   const size = useWindowSize();
 
@@ -275,6 +278,7 @@ const Header = () => {
                         <Link href="/#">
                           <a className="dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase">
                             Settings
+                           
                           </a>
                         </Link>
                         <Link href="/#">

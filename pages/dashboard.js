@@ -6,8 +6,10 @@ import * as XLSX from "xlsx";
 
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
+import { useRouter } from "next/router";
 
 import { LISTE_DOCUMENTS } from "../lib/graphql";
+import { AuthContext } from "../context/Auth";
 
 const defaultJobs = [
   { value: "pd", label: "Product Designer" },
@@ -18,6 +20,21 @@ const defaultJobs = [
 ];
 
 export default function Dashboard () {
+
+  const router = useRouter();
+  const authContext = React.useContext(AuthContext);
+
+  
+  
+// React.useEffect(() => {
+ 
+//   const userinfo = JSON.parse(localStorage.getItem("userinfo"));
+  
+//   if(!userinfo){
+
+//     router.push("/");
+// }
+//   }, []);
 
   const onChange = (e) => {
     const [file] = e.target.files;
@@ -37,7 +54,7 @@ export default function Dashboard () {
 
   const {data,error,loading}=useQuery(LISTE_DOCUMENTS);
 
-  console.log(data)
+  // console.log(error)
 
   return (
     <>

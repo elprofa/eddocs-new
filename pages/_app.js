@@ -20,51 +20,83 @@ import "../assets/fonts/fontawesome-5/css/all.css";
 import "../scss/bootstrap.scss";
 import "../scss/main.scss";
 import withData from "../lib/withData";
+import { useState,useEffect } from "react";
+import { useRouter } from "next/router";
+import { AuthProvider } from "../context/Auth";
 
-import { ApolloProvider } from "@apollo/client";
-import withData from "../lib/withData";
+
 
 const MyApp = ({ Component, pageProps, router,apollo }) => {
-  console.log(apollo)
+
+  
+ 
+
+  
+
+  // console.log(apollo)
+
+  
+
+ 
+
   if (router?.pathname.match(/404/)) {
     return (
       <ApolloProvider client={apollo}>
+        <AuthProvider>
         <GlobalProvider>
           <Layout pageContext={{ layout: "bare" }}>
             <Component {...pageProps} />
           </Layout>
         </GlobalProvider>
+        </AuthProvider>
       </ApolloProvider>
     );
   }
   if (router?.pathname.match(/dashboard/)) {
     return (
       <ApolloProvider client={apollo}>
+        <AuthProvider>
         <GlobalProvider>
           <Layout pageContext={{ layout: "dashboard" }}>
             <Component {...pageProps} />
           </Layout>
         </GlobalProvider>
+        </AuthProvider>
       </ApolloProvider>
     );
   }
 
   return (
+    
     <ApolloProvider client={apollo}>
       {/* <GlobalProvider>
         <Layout pageContext={{}}>
           <Component {...pageProps} />
         </Layout>
       </GlobalProvider> */}
-
+       <AuthProvider>
         <GlobalProvider>
+         
           <Layout pageContext={{ layout: "dashboard" }}>
+            
             <Component {...pageProps} />
+           
           </Layout>
+         
         </GlobalProvider>
+      </AuthProvider>
+      
     </ApolloProvider>
+    
   );
+
+
+
+
+
 };
+
+
 
 MyApp.getInitialProps=async function ({Component,ctx}){
  
