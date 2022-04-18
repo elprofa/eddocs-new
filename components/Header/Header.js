@@ -14,7 +14,8 @@ import { menuItems } from "./menuItems";
 
 import imgP from "../../assets/image/header-profile.png";
 import StyleDuBouton from "./style";
-import { AuthContext } from "../../context/Auth";
+import { useAuth } from "../../context/Auth";
+import {useRouter} from 'next/router'
 
 const SiteHeader = styled.header`
   .dropdown-toggle::after {
@@ -51,6 +52,20 @@ const ToggleButton = styled.button`
 `;
 
 const Header = () => {
+
+  const router = useRouter();
+
+  const {authLogout} = useAuth();
+
+  function logoutHandler(event){
+
+       
+         authLogout();
+         router.push("/");
+
+  }
+
+
   const gContext = useContext(GlobalContext);
   const [showScrolling, setShowScrolling] = useState(false);
   const [showReveal, setShowReveal] = useState(false);
@@ -286,11 +301,12 @@ const Header = () => {
                             Edit Profile
                           </a>
                         </Link>
-                        <Link href="/#">
+                        {/* <Link href="/#">
                           <a className=" dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase">
                             Log Out
                           </a>
-                        </Link>
+                        </Link> */}
+                        <a style={{ cursor:"pointer" }} onClick={(e) => logoutHandler(e)} className="dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase">Log Out</a>
                       </Dropdown.Menu>
                     ) : (
                       <div
@@ -307,11 +323,12 @@ const Header = () => {
                             Edit Profile
                           </a>
                         </Link>
-                        <Link href="/#">
+                        {/* <Link href="/#">
                           <a className=" dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase">
                             Log Out
                           </a>
-                        </Link>
+                        </Link> */}
+                        <a style={{ cursor:"pointer" }}  onClick={(e) => logoutHandler(e)} className="dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase">Log Out</a>
                       </div>
                     )}
                   </Dropdown>

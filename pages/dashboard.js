@@ -9,7 +9,9 @@ import gql from 'graphql-tag';
 import { useRouter } from "next/router";
 
 import { LISTE_DOCUMENTS } from "../lib/graphql";
-import { AuthContext } from "../context/Auth";
+// import { AuthContext } from "../context/Auth";
+import { useAuth } from "../context/Auth";
+import FullPageLoader from "../components/FullPageLoader";
 
 const defaultJobs = [
   { value: "pd", label: "Product Designer" },
@@ -22,19 +24,32 @@ const defaultJobs = [
 export default function Dashboard () {
 
   const router = useRouter();
-  const authContext = React.useContext(AuthContext);
+  
+   const {isAuthenticated, user, isLoading } = useAuth();
+  const {data,error,loading}=useQuery(LISTE_DOCUMENTS);
 
-  
-  
-// React.useEffect(() => {
+  // console.log(error)
+
+React.useEffect(() => {
+
+    // console.log(isAuthenticated,user,isLoading);
+    if(!isLoading && !isAuthenticated){
+
+         router.push('/');
+    }
  
-//   const userinfo = JSON.parse(localStorage.getItem("userinfo"));
-  
-//   if(!userinfo){
 
-//     router.push("/");
-// }
-//   }, []);
+  }, [isAuthenticated,isLoading]);
+
+
+  if(isLoading || !isAuthenticated){
+
+          return <FullPageLoader/>;
+  }
+
+
+
+
 
   const onChange = (e) => {
     const [file] = e.target.files;
@@ -52,9 +67,7 @@ export default function Dashboard () {
   };
 
 
-  const {data,error,loading}=useQuery(LISTE_DOCUMENTS);
 
-  // console.log(error)
 
   return (
     <>

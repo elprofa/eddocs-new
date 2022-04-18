@@ -1,39 +1,63 @@
-import React, { useEffect } from "react";
-import { useRouter } from "next/router";
-import { withTheme } from "styled-components";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { set } from 'lodash';
+const AuthContext = createContext();
 
-const AuthContext = React.createContext();
-const { Provider } = AuthContext;
+function AuthProvider({ children }) {
+    const [user, setUser] = useState({
+        localUser:null,
+        localToken:null
+    });
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-const AuthProvider = ({ children }) => {
-  const router = useRouter();
-  const [authState, setAuthState] = React.useState({});
-
-  useEffect(()=>{
-
-     const userinfo = JSON.parse(localStorage.getItem("userinfo"));
-
-
-     if(userinfo){
-
-        if(router.pathname=="/"){
-          router.push("/dashboard");
+    useEffect(() => {
+      
+        const userinfo = localStorage.getItem("userinfo")?JSON.parse(localStorage.getItem("userinfo")):null;
+        console.log('userinfo: ', userinfo);
+        if (!(userinfo === null || userinfo === undefined)) {
+          
+            setIsAuthenticated(true);
+            setUser({
+                localUser:userinfo.user,
+                localToken:userinfo.jwt
+            });
         }
-        setAuthState(userinfo);
-     }else{
-        router.push("/");
-     }
-     
-  },[authState]);
+        setIsLoading(false);
+    }, []);
+
+
+    function authLogin(user){
+
+          setIsAuthenticated(true);
+          setUser(user);
+    }
+
+    function authLogout(){
+
+            setIsAuthenticated(false);
+            setUser({localUser:null,localToken:null});
+            localStorage.removeItem("userinfo");
+    }
 
   
 
-  
- return (
-   <Provider value={authState}>
-    {children}
-   </Provider>
- );
-};
+    return (
+        <AuthContext.Provider
+            value={{
+                isAuthenticated,
+                authLogin,
+                user,
+                isLoading,
+                authLogout
+                
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
+}
 
-export { AuthContext, AuthProvider };
+const useAuth = () => useContext(AuthContext);
+
+export { AuthProvider, useAuth };

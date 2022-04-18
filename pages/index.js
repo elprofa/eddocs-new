@@ -9,28 +9,40 @@ import gql from 'graphql-tag';
 import { GET_USER } from "../lib/graphql";
 import Swal from 'sweetalert2';
 import {useRouter} from 'next/router'
-import { AuthContext } from "../context/Auth";
+import { AuthContext, useAuth } from "../context/Auth";
+import FullPageLoader from "../components/FullPageLoader";
 
 
 export default function MainPage (){
 
 
   const router = useRouter();
-  const authContext = React.useContext(AuthContext);
 
-  // React.useEffect(() => {
- 
-  //   const userinfo = JSON.parse(localStorage.getItem("userinfo"));
-    
-  //   if(userinfo){
-  //     router.push("/dashboard");
-  //    }
-  //   }, []);
+  const {isAuthenticated, authLogin, user, isLoading } = useAuth();
 
   const [loginState,setLoginState] = useState({username:"",password:""});
+  const [errorMessage,setErrorMessage] = useState("");
   const [login, {data,loading,error}] = useMutation(GET_USER, { errorPolicy: 'all' });
 
   
+  React.useEffect(() => {
+  
+    // console.log(isAuthenticated,user,isLoading);
+    if(!isLoading && isAuthenticated){
+
+         router.push('/dashboard');
+    }
+ 
+
+  }, [isAuthenticated,isLoading]);
+
+
+  if(isLoading || isAuthenticated){
+ 
+
+          return <FullPageLoader/>;
+  }
+
 
  
 
@@ -39,12 +51,13 @@ export default function MainPage (){
 
       window.localStorage.setItem("userinfo", JSON.stringify(data.login));
 
+      { authLogin(data.login) }
+
       router.push('/dashboard');
     }
     if(error){
 
-      const {message,extensions} = error.graphQLErrors[0];
-        console.log(error);
+      errorMessage=="" && setErrorMessage("Nom ou Mot de passe incorrect");
 
     }
 
@@ -109,7 +122,7 @@ export default function MainPage (){
                            <div style={{ boxShadow:"0px 0px 10px 0px grey",borderRadius:"15px",padding:"30px",background:"#fff"}}>
                                 <img src={imgL1LogoWhite.src} alt="" className="mb-10"/>
                                 <form className="form-container" onSubmit={handleForm} >
-                                
+                                 <p className="text-danger mb-2">{errorMessage}</p>
                                 <div className="form-group">
                                   {/* <label for="utilisateur">Nom d'utilisateur</label> */}
                                   <input type="text" className="form-control" id="utilisateur"  placeholder="Nom d'utilisateur" onChange={handleInput} value={loginState.username} name="username"/>
