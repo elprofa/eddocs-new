@@ -23,6 +23,7 @@ export default function MainPage (){
   const [loginState,setLoginState] = useState({username:"",password:""});
   const [errorMessage,setErrorMessage] = useState("");
   const [login, {data,loading,error}] = useMutation(GET_USER, { errorPolicy: 'all' });
+  const [canConnect,setCanConnect] = useState(false);
 
   
   React.useEffect(() => {
@@ -37,6 +38,7 @@ export default function MainPage (){
   }, [isAuthenticated,isLoading]);
 
 
+  // if(isLoading || isAuthenticated){
   if(isLoading || isAuthenticated){
  
 
@@ -51,9 +53,11 @@ export default function MainPage (){
 
       window.localStorage.setItem("userinfo", JSON.stringify(data.login));
 
-      { authLogin(data.login) }
-
+      // { authLogin(data.login) }
+      { authLogin() }
+      
       router.push('/dashboard');
+
     }
     if(error){
 

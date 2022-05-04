@@ -14,7 +14,7 @@ function AuthProvider({ children }) {
     useEffect(() => {
       
         const userinfo = localStorage.getItem("userinfo")?JSON.parse(localStorage.getItem("userinfo")):null;
-        console.log('userinfo: ', userinfo);
+        // console.log('userinfo: ', userinfo);
         if (!(userinfo === null || userinfo === undefined)) {
           
             setIsAuthenticated(true);
@@ -27,11 +27,20 @@ function AuthProvider({ children }) {
     }, []);
 
 
-    function authLogin(user){
+    // function authLogin(user){
 
-          setIsAuthenticated(true);
-          setUser(user);
-    }
+    //       setIsAuthenticated(true);
+    //       setUser(user);
+    // }
+
+    function authLogin(){
+        const userinfo = localStorage.getItem("userinfo")?JSON.parse(localStorage.getItem("userinfo")):null;
+        setIsAuthenticated(true);
+        setUser({
+            localUser:userinfo.user,
+            localToken:userinfo.jwt
+        });
+  }
 
     function authLogout(){
 
